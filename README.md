@@ -1,9 +1,10 @@
 # atomicfile
 
-Package `atomicfile` wraps os.File to allow atomic file updates on Linux, macOS, and on Windows.
+Package `atomicfile` provides `*os.File` wrapper to allow atomic file writes. Works on Linux, macOS, and Windows.
 
-All writes will go to a temporary file. Call `Close()` explicitly when you are done writing to atomically rename the file
-making the changes visible. Call `Abort()` to discard all your writes.
+All writes will go to a temporary file. 
+Call `Close()` explicitly when you are done writing to atomically rename the file making the changes visible. 
+Call `Abort()` to discard all your writes.
 
 This allows for a file to always be in a consistent state and never represent an in-progress write.
 
@@ -15,7 +16,7 @@ Standard `go get`:
 $ go get github.com/sashka/atomicfile
 ```
 
-## Usage
+## Example
 
 ```
 import "github.com/sashka/atomicfile"
