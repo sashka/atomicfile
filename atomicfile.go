@@ -23,7 +23,7 @@ type File struct {
 // path when Closed.
 func New(path string, mode os.FileMode) (*File, error) {
 	dir, file := filepath.Split(path)
-	f, err := ioutil.TempFile(dir, file)
+	f, err := ioutil.TempFile(dir, "."+file+"-")
 	if err != nil {
 		return nil, err
 	}
