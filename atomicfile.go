@@ -7,7 +7,6 @@
 package atomicfile
 
 import (
-	"errors"
 	"io/ioutil"
 	"os"
 	"path/filepath"
@@ -16,7 +15,8 @@ import (
 // File behaves like os.File, but does an atomic rename operation at Close.
 type File struct {
 	*os.File
-	path string
+	path      string
+	committed bool
 }
 
 // New creates a new temporary file that will replace the file at the given
@@ -46,17 +46,17 @@ func (f *File) Close() error {
 	if err := AtomicRename(f.Name(), f.path); err != nil {
 		return err
 	}
+	f.committed = true
 	return nil
 }
 
 // Abort closes the file and removes it, discarding all the changes.
-// It's safe to call Abort on a file which is already closed.
+// It's safe to call Abort on a file which is already committed.
 func (f *File) Abort() error {
+	if f.committed {
+		return nil
+	}
 	if err := f.File.Close(); err != nil {
-		// Do nothing when file is already closed.
-		if errors.Is(err, os.ErrClosed) {
-			return nil
-		}
 		os.Remove(f.Name())
 		return err
 	}
